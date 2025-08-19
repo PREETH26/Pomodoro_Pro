@@ -66,3 +66,15 @@ exports.login = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+// Protected profile route (for testing middleware)
+exports.getProfile = async (req, res) => {
+  try {
+    res.json({
+      message: "Protected profile accessed",
+      user: req.user // this comes from middleware
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
