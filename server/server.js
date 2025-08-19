@@ -3,11 +3,11 @@ require('dotenv').config();
 const cors = require('cors');
 const app = express();
 const PORT = process.env.PORT || 3000;
-
+const authRoutes = require('./routes/authroutes');
 
 app.use(express.json());
 app.use(cors());
-
+app.use('/api/auth', authRoutes);
 app.get('/', (req, res) => {
     res.send('Pomodoro Pro Server is running!');
 });
