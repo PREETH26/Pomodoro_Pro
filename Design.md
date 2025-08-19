@@ -48,15 +48,15 @@ User
 
 {
 
-`  `"userId": "uuid",
+`*`"userId": "uuid",
 
-`  `"name": "string",
+`*`"name": "string",
 
-`  `"email": "string",
+`*`"email": "string",
 
-`  `"passwordHash": "string",
+`*`"passwordHash": "string",
 
-`  `"createdAt": "timestamp"
+`*`"createdAt": "timestamp"
 
 }
 
@@ -64,17 +64,17 @@ Task
 
 {
 
-`  `"taskId": "uuid",
+`*`"taskId": "uuid",
 
-`  `"userId": "uuid",
+`*`"userId": "uuid",
 
-`  `"title": "string",
+`*`"title": "string",
 
-`  `"status": "in-progress | completed | failed",
+`*`"status": "in-progress | completed | failed",
 
-`  `"createdAt": "timestamp",
+`*`"createdAt": "timestamp",
 
-`  `"completedAt": "timestamp"
+`*`"completedAt": "timestamp"
 
 }
 
@@ -82,19 +82,19 @@ PomodoroSession
 
 {
 
-`  `"sessionId": "uuid",
+`*`"sessionId": "uuid",
 
-`  `"taskId": "uuid",
+`*`"taskId": "uuid",
 
-`  `"userId": "uuid",
+`*`"userId": "uuid",
 
-`  `"duration": "number (minutes)",
+`*`"duration": "number (minutes)",
 
-`  `"status": "completed | interrupted | failed",
+`*`"status": "completed | interrupted | failed",
 
-`  `"startTime": "timestamp",
+`*`"startTime": "timestamp",
 
-`  `"endTime": "timestamp"
+`*`"endTime": "timestamp"
 
 }
 
