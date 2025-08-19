@@ -11,6 +11,7 @@ Users can log in, create tasks, run a timer with start/pause/stop controls, and 
 
 After each session, they confirm task completion, and all data is reflected in their dashboard statistics.
 
+
 2\. Core Features:-
 
 - Authentication
@@ -28,6 +29,7 @@ After each session, they confirm task completion, and all data is reflected in t
 - Number of tasks completed vs. missed
 - Charts/graphs for progress
 
+
 3\. User Flow:-
 
 - User signs up / logs in
@@ -36,11 +38,13 @@ After each session, they confirm task completion, and all data is reflected in t
 - Timer ends → User marks task Completed/Not Completed
 - Dashboard updates → Shows time spent + task stats
 
+
 4\. System Components:-
 
 - Frontend: React (UI – login, timer, dashboard)
 - Backend: Node.js/Express (REST APIs)
 - Database: MongoDB (store users, tasks, sessions, feedback)
+
 
 5\. Database Schema:-
 
@@ -98,6 +102,7 @@ PomodoroSession
 
 }
 
+
 6\. Class Diagram (Backend Services):-
 
 +------------------+
@@ -140,6 +145,7 @@ PomodoroSession
 
 7\. API Design:-
 
+
 Auth
 
 POST /api/auth/signup → Register
@@ -165,6 +171,7 @@ POST /api/sessions/stop → Stop session
 POST /api/sessions/complete → Mark completed
 
 
+
 8\. UI Wireframes (Conceptual):-
 
 - Login / Signup Page → Auth form
@@ -172,6 +179,7 @@ POST /api/sessions/complete → Mark completed
 - Timer Screen → Countdown + Pause/Stop
 - Completion Popup → "Did you complete task?" Yes/No
 - Dashboard → Graphs of hours, tasks completed/missed
+
 
 9\. Future Enhancements (If Time Permits):-
 
@@ -189,6 +197,7 @@ POST /api/sessions/complete → Mark completed
 - Advanced Analytics
 - Identify most productive hours of the day
 - Personalized break/work ratio recommendations
+
 
 
 10\. Sequence Flow (Timer Example):-
