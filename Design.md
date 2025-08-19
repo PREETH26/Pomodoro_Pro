@@ -190,6 +190,7 @@ POST /api/sessions/complete → Mark completed
 - Identify most productive hours of the day
 - Personalized break/work ratio recommendations
 
+
 10\. Sequence Flow (Timer Example):-
 
 - User → Start Timer → Backend records session start  
