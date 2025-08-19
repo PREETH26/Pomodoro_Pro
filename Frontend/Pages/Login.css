@@ -1,0 +1,102 @@
+body{
+  padding: 0;
+  margin: 0;
+  font-family: "Inter", sans-serif;
+}
+
+.bg-main{
+  height: 100vh;
+  width: 100vw;
+  background-image: linear-gradient(to bottom,#08439F 0%, #284BB2  25%, #3F52C4 50%, #5559D6 75%, #031839 100%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+input::placeholder{
+  color: black;
+  font-weight: 700;
+}
+
+.card{
+  background: white;
+  width: 45vw;
+  height: 70vh;
+  max-width: 700px;
+  border-radius: 10px;
+  box-shadow: 8px 7px 4px rgba(0,0,0,0.5);
+}
+
+.heading-lg{
+  margin-top: 30px;
+  text-align: center;
+  font-size: 26px;
+  padding-top: 10px;
+  font-weight: 500;
+}
+
+.input-body{
+  padding: 25px;
+  display: flex;
+  justify-self: center;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.input-field{
+  background: #D9D9D9;
+  border: none;
+  box-shadow: inset 0px 4px 4px rgba(0,0,0,0.5);
+  color:black;
+  padding: 20px;
+  padding-bottom: 20px;
+  width: 35vw;
+  border-radius: 10px;
+  font-size: medium;
+  font-weight: 500;
+}
+
+.submit{
+  display: flex;
+  padding: 12px 32px;
+  border-radius: 10px;
+  border: none;
+  background-image: linear-gradient(to bottom,#08439F 0%, #284BB2  25%, #3F52C4 50%, #5559D6 75%, #031839 100%);
+  justify-self: center;
+  align-self: center;
+  text-align: center;
+  color: white;
+  font-weight: bold;
+  letter-spacing: 0.01cm;
+  cursor: pointer;
+  box-shadow: 0px 4px 4px rgba(0,0,0,0.2);
+  font-size: 18px;
+}
+
+.submit:hover{
+  box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.3);
+}
+
+.submit::before{
+  transform: translateX(-20px);
+}
+
+.submit::after{
+  transform: translateX(20px);
+}
+
+.account-change-lg{
+  margin-top: 80px;  
+  display: flex;
+  justify-content: center;
+  align-self: center;
+  text-align: center;
+}
+
+.change-btn{
+  display: flex;
+  justify-content: center;
+  align-self: center;
+  text-align: center;
+  font-weight: 900;
+}
