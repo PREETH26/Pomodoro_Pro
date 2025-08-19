@@ -1,2 +1,2 @@
-Figma prototype link  ->  https://www.figma.com/proto/CRq52zIijChaBPn8HUOGn5/Untitled?node-id=32-2&t=TOtfzCvTScXvqEcc-1&scaling=min-zoom&content-scaling=fixed&page-id=0%3A1&starting-point-node-id=32%3A2 
+Figma prototype link ->  https://www.figma.com/proto/CRq52zIijChaBPn8HUOGn5/Untitled?node-id=32-2&t=TOtfzCvTScXvqEcc-1&scaling=min-zoom&content-scaling=fixed&page-id=0%3A1&starting-point-node-id=32%3A2 
 
