@@ -35,12 +35,13 @@ function Login() {
     }
 
     try {
-      const response = await axios.post("http://localhost:3000/api/auth/login", formData);
+      const response = await axios.post("http://localhost:3000/api/auth/login", formData, { withCredentials: true });
       setSuccess("Login Successful!");
       console.log("login");
-      navigate("/dashboard");
+      navigate("/teams");
     } catch (error) {
       setError("Login failed. Please try again.");
+      console.log(error)
     }
   };
 
