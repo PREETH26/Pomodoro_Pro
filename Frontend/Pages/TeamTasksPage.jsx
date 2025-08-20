@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Timer from "../Components/Timer";
+import Timer from "../Components/Timer2";
 import TeamTaskManagement from "../Components/TeamTaskManagement";
 import TeamTaskHistory from "../Components/TeamTaskHistory";
 
@@ -70,7 +70,7 @@ export default function TeamTasksPage() {
       <h1 className="text-white mb-6 text-xl text-center"><span className="font-semibold text-2xl">Team Task</span> <br/>Dashboard</h1>
 
       <div className="flex gap-8">
-      <Timer activeTask={activeTask} onComplete={handlePomodoroComplete} />
+     <Timer activeTask={activeTask} onComplete={handlePomodoroComplete} />
         <TeamTaskManagement addTask={addTask} />
       </div>
 

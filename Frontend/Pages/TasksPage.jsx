@@ -115,7 +115,7 @@ export default function TasksPage() {
       </div>
 
       <TaskHistory
-        tasks={tasks}
+        tasks={tasks || []}
         onPendingClick={handlePendingTaskClick}
         onLiveClick={handleLiveTaskClick}
       />
