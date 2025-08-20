@@ -7,6 +7,7 @@ import Hero from '../Pages/Hero'
 import Protected from '../Auth/Protected'
 import Dashboard from '../Pages/Dashboard'
 
+
 function App() {
   return(
   <BrowserRouter>
@@ -15,6 +16,7 @@ function App() {
       <Route path='/signup' element={<Signup/>}/>
       <Route path='/login' element={<Login/>}/>
       <Route path='/dashboard' element={<Protected><Dashboard/></Protected>}/>
+
     </Routes>
   </BrowserRouter>
   )

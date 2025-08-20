@@ -2,6 +2,7 @@ import { useState } from 'react'
 import "./Signup.css"
 import axios from "axios"
 import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 function Signup() {
   const [formData,setFormData] = useState({
@@ -10,7 +11,7 @@ function Signup() {
     password: "",
     confirmPassword: ""
   })
-
+const navigate = useNavigate();
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
@@ -47,8 +48,9 @@ function Signup() {
     }
 
     try {
-      const response = await axios.post("",formData)
+      const response = await axios.post("http://localhost:3000/api/auth/signup",formData)
       setSuccess("Signup Successfull!")
+      navigate("/dashboard");
 
     } catch (error) {
       setError("Signup failed. Please try again.");
