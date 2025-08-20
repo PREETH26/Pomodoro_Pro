@@ -66,8 +66,8 @@ export default function TeamTasksPage() {
   };
 
   return (
-    <div className="min-h-screen p-6 text-black">
-      <h1 className="text-white mb-6">Team Task Dashboard</h1>
+    <div className="min-h-screen p-6 text-black flex flex-col items-center">
+      <h1 className="text-white mb-6 text-xl text-center"><span className="font-semibold text-2xl">Team Task</span> <br/>Dashboard</h1>
 
       <div className="flex gap-8">
       <Timer activeTask={activeTask} onComplete={handlePomodoroComplete} />

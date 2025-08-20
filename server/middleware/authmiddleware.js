@@ -9,11 +9,11 @@ const authMiddleware = (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    console.log(decoded.id);
     req.userId = decoded.id; 
-    console.log(decoded);
     next();
   } catch (err) {
-    return res.status(401).json({ message: 'Not authorized, token failed' });
+    return res.status(401).json({ message: 'Not authorized, token failed', details:err.message});
   }
 };
 

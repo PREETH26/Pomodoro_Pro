@@ -17,14 +17,17 @@ const taskSchema = new mongoose.Schema(
       type: Number,
       default: 0, // increment when user spends time (via pomodoro timer)
     },
+    pomodoros:{
+      type: Number,
+      default: 1
+    },
     completed: {
       type: Boolean,
       default: false,
     },
+    status: { type: String, enum: ["pending", "live", "completed"], default: "pending" }
   },
   { timestamps: true } // createdAt, updatedAt
 );
 
-const Task = mongoose.model("Task", taskSchema);
-
-export default Task;
+module.exports = mongoose.model("Task", taskSchema);

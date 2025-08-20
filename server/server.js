@@ -4,6 +4,7 @@ const cors = require('cors');
 const app = express();
 const PORT = process.env.PORT || 3000;
 const authRoutes = require('./routes/authroutes');
+const taskRoutes = require("./routes/taskroutes")
 const cookieParser = require('cookie-parser')
 const connectDB = require('./db/db');
 connectDB();
@@ -14,6 +15,7 @@ app.use(cors({
   credentials: true                
 }));app.use(cookieParser());
 app.use('/api/auth', authRoutes);
+app.use('/api/tasks', taskRoutes);
 app.get('/', (req, res) => {
     res.send('Pomodoro Pro Server is running!');
 });
