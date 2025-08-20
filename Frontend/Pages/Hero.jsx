@@ -4,8 +4,7 @@ export default function Hero() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-700 via-blue-800 to-blue-900 text-white relative">
-      {/* Navbar */}
+    <div className="min-h-screen  text-white relative">
       <div className="flex justify-between items-center w-full px-10 py-6 fixed top-0 left-0 bg-gradient-to-r from-blue-700 to-blue-800 shadow-md z-10">
         <h1 className="text-3xl font-extrabold tracking-wide">POMODORO PRO</h1>
         <div className="flex items-center text-xl bg-white px-4 py-1 rounded-lg shadow">
@@ -19,9 +18,7 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* Hero Content */}
       <div className="flex flex-col items-center pt-48 px-6">
-        {/* Big Circle Button */}
         <button
           onClick={() => navigate("/dashboard")}
           className="w-52 h-52 rounded-full border-4 border-blue-300 flex items-center justify-center text-xl font-extrabold bg-blue-500 hover:bg-blue-600 transition shadow-xl hover:scale-105 hover:shadow-2xl"
@@ -29,12 +26,10 @@ export default function Hero() {
           GET STARTED
         </button>
 
-        {/* Subtext */}
         <p className="mt-8 bg-white text-black px-8 py-3 rounded-xl shadow-lg text-center max-w-xl text-lg">
           Kickstart your focus journey — click Get Started and boost your productivity today!
         </p>
 
-        {/* Benefits Section */}
         <div className="mt-20 max-w-3xl text-center px-4 mb-10">
           <h2 className="text-3xl font-bold mb-6 underline decoration-blue-300 decoration-2 underline-offset-4">
             Benefits of Pomodoro Pro

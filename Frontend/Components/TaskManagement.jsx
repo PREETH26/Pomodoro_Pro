@@ -7,7 +7,7 @@ export default function TaskManagement({ addTask, editingTask }) {
 
   useEffect(() => {
     if (editingTask) {
-      setTask(editingTask.task);
+      setTask(editingTask.name);
       setPomodoros(editingTask.pomodoros);
       setPriority(editingTask.priority);
     }
@@ -16,12 +16,15 @@ export default function TaskManagement({ addTask, editingTask }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!task) return;
+
     addTask({
-      task,
-      pomodoros,
+      id: editingTask ? editingTask.id : Date.now(),
+      name: task,
+      pomodoros: Number(pomodoros),
       priority,
       status: editingTask ? editingTask.status : "pending",
     });
+
     setTask("");
     setPomodoros(1);
     setPriority("Low");
@@ -85,7 +88,7 @@ export default function TaskManagement({ addTask, editingTask }) {
         type="submit"
         className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-lg font-medium transition"
       >
-        + Create Task
+        {editingTask ? "Update Task" : "+ Create Task"}
       </button>
     </form>
   );

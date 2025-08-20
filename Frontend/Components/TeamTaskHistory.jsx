@@ -4,7 +4,7 @@ export default function TeamTaskHistory({ tasks, activeTask, startTask, complete
   console.log("activeTask", activeTask);
 
   return (
-    <div className="bg-white p-4 rounded-xl shadow-md w-[900px] mt-4">
+    <div className="bg-white p-4 rounded-xl shadow-md w-[950px] mt-4">
       <h2 className="mb-3 text-lg font-semibold text-gray-800">Team Task History</h2>
 
       <div className="flex gap-10">
