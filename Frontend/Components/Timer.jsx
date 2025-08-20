@@ -10,8 +10,9 @@ export default function Timer({ activeTask, onComplete }) {
   const [mode, setMode] = useState("Focus");
   const [pomodoroCount, setPomodoroCount] = useState(0);
 
-  // New states for popups
+  // Popups
   const [showBreakPopup, setShowBreakPopup] = useState(false);
+  const [showCompletionPopup, setShowCompletionPopup] = useState(false);
 
   // Reset when new task starts
   useEffect(() => {
@@ -19,7 +20,7 @@ export default function Timer({ activeTask, onComplete }) {
       setTime(WORK_TIME);
       setMode("Focus");
       setPomodoroCount(0);
-      setIsRunning(true);
+      setIsRunning(true); // Auto-start Pomodoro
     }
   }, [activeTask?.task, activeTask?.pomodoros]);
 
@@ -41,10 +42,11 @@ export default function Timer({ activeTask, onComplete }) {
     if (mode === "Focus") {
       const nextPomodoro = pomodoroCount + 1;
 
-      // If task completed
       if (activeTask && nextPomodoro >= activeTask.pomodoros) {
+        // Task fully completed
         setIsRunning(false);
         setPomodoroCount(nextPomodoro);
+        setShowCompletionPopup(true);   // ✅ new completion popup
         onComplete(activeTask);
         return;
       }
@@ -96,6 +98,12 @@ export default function Timer({ activeTask, onComplete }) {
           Timer {activeTask ? `- ${activeTask.task}` : ""}
         </h2>
         <p className="text-sm text-gray-600 capitalize">Mode: {mode}</p>
+        {activeTask && (
+            <h2 className="text-lg font-semibold mb-2">
+                Working on: {activeTask.task}
+            </h2>
+        )}
+
         <p className="text-sm text-gray-600">
           Pomodoros: {pomodoroCount} / {activeTask ? activeTask.pomodoros : 0}
         </p>
@@ -157,6 +165,23 @@ export default function Timer({ activeTask, onComplete }) {
                 Skip Break
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Completion Popup */}
+      {showCompletionPopup && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
+          <div className="bg-white p-8 rounded-xl shadow-lg flex flex-col items-center">
+            <h2 className="mb-4 text-lg font-semibold text-green-600">
+              🎉 Task Completed!
+            </h2>
+            <button
+              className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700"
+              onClick={() => setShowCompletionPopup(false)}
+            >
+              OK
+            </button>
           </div>
         </div>
       )}
