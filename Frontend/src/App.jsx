@@ -4,8 +4,10 @@ import Signup from '../Pages/Signup'
 import Login from "../Pages/Login"
 import {BrowserRouter, Routes, Route} from "react-router-dom"
 import Hero from '../Pages/Hero'
-import Protected from '../Auth/Protected'
-import Dashboard from '../Pages/Dashboard'
+import Protected from "../Auth/Protected"
+// import Dashboard from './Pages/Dashboard'
+import TasksPage from "../Pages/TasksPage";
+
 
 
 function App() {
@@ -15,7 +17,7 @@ function App() {
       <Route path='/' element={<Hero/>}/>
       <Route path='/signup' element={<Signup/>}/>
       <Route path='/login' element={<Login/>}/>
-      <Route path='/dashboard' element={<Protected><Dashboard/></Protected>}/>
+      <Route path='/personal' element={<TasksPage/>}/>
 
     </Routes>
   </BrowserRouter>
