@@ -6,7 +6,7 @@ function Protected({child}) {
   const [loading, setLoading] = useState(true);
   const [authenticated, setAuthenticated] = useState(false);
   useEffect(()=>{
-    axios.get('/api/profile', { withCredentials: true })
+    axios.get('"http://localhost:3000/api/auth/profile"', { withCredentials: true })
     .then(res => setAuthenticated(true))
     .catch(err => setAuthenticated(false))
     .finally(()=> setLoading(false));

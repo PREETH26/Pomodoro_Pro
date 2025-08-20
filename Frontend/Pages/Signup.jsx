@@ -50,7 +50,7 @@ const navigate = useNavigate();
     try {
       const response = await axios.post("http://localhost:3000/api/auth/signup",formData)
       setSuccess("Signup Successfull!")
-      navigate("/dashboard");
+      navigate("/teams");
 
     } catch (error) {
       setError("Signup failed. Please try again.");
