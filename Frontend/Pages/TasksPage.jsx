@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Timer from "../Components/Timer";
+import Timer from "../Components/Timer2";
 import TaskManagement from "../Components/TaskManagement";
 import TaskHistory from "../Components/TaskHistory";
 import "../src/App.css";
@@ -34,7 +34,7 @@ export default function TasksPage() {
   const completeTask = (task) => {
     setTasks((prev) =>
       prev.map((t) =>
-        t.task === task.task ? { ...t, status: "done" } : t
+        t.task === task.task ? { ...t, status: "completed" } : t
       )
     );
     setActiveTask(null);
@@ -56,32 +56,30 @@ export default function TasksPage() {
 
   // Start/select a task → make it "live"
   const startTask = (task) => {
-    // Only allow if no live task
     if (tasks.some((t) => t.status === "live")) return;
     setTasks((prev) =>
       prev.map((t) =>
         t.task === task.task ? { ...t, status: "live" } : t
       )
     );
-    setActiveTask(task);
+    setActiveTask({ ...task, status: "live" });
     setShowPopup(false);
     setSelectedTask(null);
   };
 
   // Handler for clicking a pending/urgent task
   const handlePendingTaskClick = (task) => {
-    // Only show popup if no live task
     if (tasks.some((t) => t.status === "live")) return;
     setSelectedTask(task);
     setShowPopup(true);
   };
 
-  // Handler for clicking a live task (optional: could show info or nothing)
+  // Handler for clicking a live task
   const handleLiveTaskClick = () => {};
 
   return (
-    <div className="min-h-screen p-6 text-black">
-      <h1 className="text-white mb-6">Welcome, XYZ</h1>
+    <div className="min-h-screen flex flex-col items-center p-6 text-black">
+      <h1 className="text-white mb-6 ">Welcome, XYZ</h1>
 
       <div className="flex gap-8">
         <Timer activeTask={activeTask} onComplete={handlePomodoroComplete} />
