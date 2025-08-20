@@ -1,6 +1,7 @@
 const User = require('../models/user');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const { get } = require('mongoose');
 
 const register = async (req, res) => {
   try {
@@ -72,10 +73,10 @@ const logout = async (req, res) => {
 };
 
 // Get user profile
+// controllers/authcontroller.js
 const getProfile = async (req, res) => {
   try {
-    // Use req.user from authMiddleware, not req.userId
-    const userId = req.user && req.user.id;
+    const userId = req.userId;  // ✅ use req.userId
     if (!userId) return res.status(401).json({ message: 'Unauthorized' });
 
     const user = await User.findById(userId).select('-password');
@@ -88,9 +89,20 @@ const getProfile = async (req, res) => {
   }
 };
 
+const getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find().select('-password'); // exclude password
+    res.json(users);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
 module.exports = {
   register,
   login,
   logout,
-  getProfile
+  getProfile,
+  getAllUsers,
 };
