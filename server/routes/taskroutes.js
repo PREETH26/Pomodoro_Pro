@@ -1,11 +1,11 @@
-import express from "express";
-import {
+const express = require("express");
+const {
   createTask,
   getTasks,
   updateTask,
   deleteTask,
-} from "../controllers/taskcontroller.js";
-import { protect } from "../middleware/authmiddleware.js";
+} = require("../controllers/taskcontroller");
+const { protect } = require("../middleware/authmiddleware");
 
 const router = express.Router();
 
@@ -15,4 +15,4 @@ router.get("/", protect, getTasks);          // Get all tasks
 router.put("/:id", protect, updateTask);     // Update task
 router.delete("/:id", protect, deleteTask);  // Delete task
 
-export default router;
+module.exports = router;

@@ -1,4 +1,5 @@
-import Task from "../models/task.js";
+const mongoose = require("mongoose");
+const Task = require("../models/task");
 
 // ✅ Create new task
 export const createTask = async (req, res) => {
