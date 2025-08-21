@@ -3,13 +3,11 @@ const router = express.Router();
 const TeamTask = require("../models/teamTask");
 const authMiddleware = require("../middleware/authmiddleware");
 
-// POST: Create a task
+// ✅ POST: Create a task
 router.post("/", authMiddleware, async (req, res) => {
   try {
     const { name, pomodoros, priority, deadline, assignedTo } = req.body;
-
-    // ✅ use req.userId instead of req.user._id
-    const assignedBy = req.userId;
+    const assignedBy = req.userId; // from middleware
 
     const newTask = new TeamTask({
       name,
@@ -28,12 +26,12 @@ router.post("/", authMiddleware, async (req, res) => {
   }
 });
 
-// GET /api/team-tasks/assigned-to-me
+// ✅ GET /api/team-tasks/assigned-to-me
 router.get("/assigned-to-me", authMiddleware, async (req, res) => {
   try {
     const tasks = await TeamTask.find({ assignedTo: req.userId })
-      .populate("assignedBy", "name email")   // get info about who assigned
-      .populate("assignedTo", "name email"); // get info about assignees
+      .populate("assignedBy", "name email")
+      .populate("assignedTo", "name email");
 
     res.json(tasks);
   } catch (err) {
@@ -41,7 +39,7 @@ router.get("/assigned-to-me", authMiddleware, async (req, res) => {
   }
 });
 
-// GET /api/team-tasks/assigned-by-me
+// ✅ GET /api/team-tasks/assigned-by-me
 router.get("/assigned-by-me", authMiddleware, async (req, res) => {
   try {
     const tasks = await TeamTask.find({ assignedBy: req.userId })
@@ -53,22 +51,23 @@ router.get("/assigned-by-me", authMiddleware, async (req, res) => {
     res.status(500).json({ message: "Error fetching tasks", error: err.message });
   }
 });
-// PATCH /api/team-tasks/:taskId/status
+
+// ✅ PATCH /api/team-tasks/:taskId/status
 router.patch("/:taskId/status", authMiddleware, async (req, res) => {
   try {
     const { status } = req.body;
 
-    if (!["pending", "live", "done"].includes(status)) {
+    // 🔥 FIX: must match schema ("completed" instead of "done")
+    if (!["pending", "live", "completed"].includes(status)) {
       return res.status(400).json({ message: "Invalid status" });
     }
 
     const task = await TeamTask.findById(req.params.taskId);
-
     if (!task) {
       return res.status(404).json({ message: "Task not found" });
     }
 
-    // ensure only assigned user or assigner can update
+    // only assigner or assignees can update
     if (
       task.assignedBy.toString() !== req.userId &&
       !task.assignedTo.map((id) => id.toString()).includes(req.userId)
