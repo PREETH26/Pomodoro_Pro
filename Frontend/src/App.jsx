@@ -5,7 +5,6 @@ import Login from "../Pages/Login"
 import {BrowserRouter, Routes, Route} from "react-router-dom"
 import Hero from '../Pages/Hero'
 import Protected from "../Auth/Protected"
-// import Dashboard from './Pages/Dashboard'
 import TasksPage from "../Pages/TasksPage";
 import TeamTasksPage from '../Pages/TeamTasksPage'
 
