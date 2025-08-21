@@ -14,7 +14,7 @@
 * Designed and finalized the **Figma prototypes** for the project, ensuring a clean and user-friendly interface.
 * Implemented the **frontend components** and connected them with the backend APIs for a seamless workflow.
 * Worked on the **personalTasks module**, building the interface and ensuring smooth integration with the timer and task history.
-* Contributed to **minor backend fixes** to resolve some integration issues between the frontend and backend.
+* Contributed to **backend fixes** to resolve some integration issues between the frontend and backend.
 
 ### Lakshmidhar (Backend & System Design)
 
