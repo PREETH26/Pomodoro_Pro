@@ -17,13 +17,16 @@ export default function TasksPage() {
   }, []);
 
   const loadTasks = async () => {
-    try {
-      const res = await fetchTasks();
-      setTasks(res.data);
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  try {
+    const res = await fetchTasks();
+    const data = Array.isArray(res.data) ? res.data : res.data?.data || [];
+    setTasks(data);
+  } catch (err) {
+    console.error(err);
+    setTasks([]); // fallback so UI doesn’t break
+  }
+};
+
 
   const addTaskHandler = async (task) => {
     try {
