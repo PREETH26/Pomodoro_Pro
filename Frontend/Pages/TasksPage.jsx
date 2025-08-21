@@ -11,15 +11,30 @@ export default function TasksPage() {
   const [selectedTask, setSelectedTask] = useState(null);
   const [showCompletionPopup, setShowCompletionPopup] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
+  const [userName, setUserName] = useState(""); 
 
   useEffect(() => {
     loadTasks();
+    loadProfile();
   }, []);
 
   const loadTasks = async () => {
     try {
       const res = await fetchTasks();
       setTasks(res.data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const loadProfile = async () => {
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/profile`, {
+        credentials: "include", 
+      });
+      if (!res.ok) throw new Error("Failed to fetch profile");
+      const data = await res.json();
+      setUserName(data.name); 
     } catch (err) {
       console.error(err);
     }
@@ -90,7 +105,6 @@ export default function TasksPage() {
     setShowPopup(true);
   };
 
-  // ✅ New: Delete task
   const handleDelete = async (task) => {
     if (!window.confirm(`Are you sure you want to delete "${task.name}"?`)) return;
     try {
@@ -105,7 +119,9 @@ export default function TasksPage() {
 
   return (
     <div className="min-h-screen flex flex-col items-center p-6 text-black">
-      <h1 className="text-white mb-6">Welcome, XYZ</h1>
+      <h1 className="text-white self-start font-bold text-2xl">
+        Welcome, <span className="text-4xl">{userName || "User"}</span>
+      </h1>
 
       <div className="flex gap-7">
         <Timer activeTask={activeTask} onComplete={handlePomodoroComplete} />
@@ -116,10 +132,9 @@ export default function TasksPage() {
         tasks={tasks || []}
         onPendingClick={handlePendingTaskClick}
         onLiveClick={handleLiveTaskClick}
-        onDelete={handleDelete} // pass delete handler
+        onDelete={handleDelete}
       />
 
-      {/* Start / Edit Popup */}
       {showPopup && selectedTask && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
           <div className="bg-white p-8 rounded-xl shadow-lg flex flex-col items-center">
@@ -194,7 +209,6 @@ export default function TasksPage() {
         </div>
       )}
 
-      {/* Completion Popup */}
       {showCompletionPopup && selectedTask && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
           <div className="bg-white p-8 rounded-xl shadow-lg flex flex-col items-center">
