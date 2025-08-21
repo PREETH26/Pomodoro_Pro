@@ -1,4 +1,6 @@
-export default function TaskHistory({ tasks, onPendingClick, onLiveClick }) {
+import { useState } from "react";
+
+export default function TaskHistory({ tasks, onPendingClick, onLiveClick, onDelete }) {
   return (
     <div className="bg-white p-4 rounded-xl shadow-md w-[950px] mt-4">
       <h2 className="mb-3 text-lg font-semibold text-gray-800">Task History</h2>
@@ -15,13 +17,20 @@ export default function TaskHistory({ tasks, onPendingClick, onLiveClick }) {
               .map((t, i) => (
                 <div
                   key={i}
-                  onClick={() => onLiveClick(t)}
-                  className="border p-2 mb-2 rounded flex justify-between cursor-pointer hover:bg-blue-50"
+                  className="border p-2 mb-2 rounded flex justify-between items-center cursor-pointer hover:bg-blue-50"
                 >
-                  <span>{t.name}</span>
-                  <span className="text-sm text-gray-500">
-                    {t.pomodoros} 🍅 | {t.priority}
-                  </span>
+                  <span onClick={() => onLiveClick(t)}>{t.name}</span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm text-gray-500">
+                      {t.pomodoros} 🍅 | {t.priority}
+                    </span>
+                    <button
+                      className="text-red-600 hover:text-red-800 text-sm"
+                      onClick={() => onDelete(t)}
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </div>
               ))
           )}
@@ -38,13 +47,20 @@ export default function TaskHistory({ tasks, onPendingClick, onLiveClick }) {
               .map((t, i) => (
                 <div
                   key={i}
-                  onClick={() => onPendingClick(t)}
-                  className="border p-2 mb-2 rounded flex justify-between cursor-pointer hover:bg-blue-50"
+                  className="border p-2 mb-2 rounded flex justify-between items-center cursor-pointer hover:bg-blue-50"
                 >
-                  <span>{t.name}</span>
-                  <span className="text-sm text-gray-500">
-                    {t.pomodoros} 🍅 | {t.priority}
-                  </span>
+                  <span className="text-blue-500" onClick={() => onPendingClick(t)}>{t.name}</span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm text-gray-500">
+                      {t.pomodoros} 🍅 | {t.priority}
+                    </span>
+                    <button
+                      className="text-red-600 hover:text-red-800 text-sm"
+                      onClick={() => onDelete(t)}
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </div>
               ))
           )}
@@ -61,10 +77,18 @@ export default function TaskHistory({ tasks, onPendingClick, onLiveClick }) {
               .map((t, i) => (
                 <div
                   key={i}
-                  className="border p-2 mb-2 rounded flex justify-between bg-green-50 text-green-700"
+                  className="border p-2 mb-2 rounded flex justify-between items-center bg-green-50 text-green-700"
                 >
                   <span>{t.name}</span>
-                  <span className="text-sm">✅ Done</span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm">✅ Done</span>
+                    <button
+                      className="text-red-600 hover:text-red-800 text-sm"
+                      onClick={() => onDelete(t)}
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </div>
               ))
           )}
