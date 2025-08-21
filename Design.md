@@ -11,6 +11,7 @@ Users can log in, create tasks, run a timer with start/pause/stop controls, and 
 
 After each session, they confirm task completion, and all data is reflected in their dashboard statistics.
 
+
 2\. Core Features:-
 
 - Authentication
@@ -25,6 +26,7 @@ After each session, they confirm task completion, and all data is reflected in t
 - Start, Pause, Resume, Stop options
 - Dashboard
 
+
 3\. User Flow:-
 
 - User signs up / logs in
@@ -32,11 +34,13 @@ After each session, they confirm task completion, and all data is reflected in t
 - User can start timer → User can Pause/Stop
 - Timer ends → User marks task Completed/Not Completed
 
+
 4\. System Components:-
 
 - Frontend: React (UI – login, timer)
 - Backend: Node.js/Express (REST APIs)
 - Database: MongoDB (store users, tasks)
+
 
 5\. Database Schema:-
 
@@ -75,6 +79,7 @@ Task
 }
 
 
+
 6\. Class Diagram (Backend Services):-
 
 +------------------+
@@ -106,6 +111,7 @@ Task
 
 7\. API Design:-
 
+
 Auth
 
 POST /api/auth/signup → Register
@@ -122,11 +128,13 @@ GET /api/tasks → Get tasks list
 
 
 
+
 8\. UI Wireframes (Conceptual):-
 
 - Login / Signup Page → Auth form
 - Timer Screen → Countdown + Pause/Stop
 - Completion Popup → "Did you complete task?" Yes/No
+
 
 9\. Future Enhancements (If Time Permits):-
 
@@ -144,6 +152,8 @@ GET /api/tasks → Get tasks list
 - Advanced Analytics
 - Identify most productive hours of the day
 - Personalized break/work ratio recommendations
+
+
 
 10\. Sequence Flow (Timer Example):-
 
