@@ -6,7 +6,7 @@ import TeamTaskHistory from "../Components/TeamTaskHistory";
 import { Link } from "react-router";
 import { ArrowRight } from 'lucide-react';
 
-const API = "http://localhost:3000/api";
+const API = import.meta.env.VITE_API_URL+"/api";
 
 export default function TeamTasksPage() {
   const [assignedToMe, setAssignedToMe] = useState([]);
