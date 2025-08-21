@@ -2,18 +2,16 @@ import { useState, useEffect } from "react";
 import Timer from "../Components/Timer2";
 import TaskManagement from "../Components/TaskManagement";
 import TaskHistory from "../Components/TaskHistory";
-import { fetchTasks, createTask, updateTask } from "../api/tasks";
+import { fetchTasks, createTask, updateTask, deleteTask } from "../api/tasks";
 
 export default function TasksPage() {
   const [tasks, setTasks] = useState([]);
   const [activeTask, setActiveTask] = useState(null);
-
   const [showPopup, setShowPopup] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
   const [showCompletionPopup, setShowCompletionPopup] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
 
-  // Load tasks from backend
   useEffect(() => {
     loadTasks();
   }, []);
@@ -22,22 +20,18 @@ export default function TasksPage() {
     try {
       const res = await fetchTasks();
       setTasks(res.data);
-      console.log(res.data)
     } catch (err) {
       console.error(err);
     }
   };
 
-  // Add / Update task
   const addTaskHandler = async (task) => {
-    console.log(task)
     try {
       if (editingTask) {
         const res = await updateTask(editingTask._id, task);
         setTasks((prev) =>
           prev.map((t) => (t._id === editingTask._id ? res.data : t))
         );
-        // ✅ Update activeTask if currently running
         if (activeTask?._id === editingTask._id) setActiveTask(res.data);
         setEditingTask(null);
       } else {
@@ -49,10 +43,9 @@ export default function TasksPage() {
     }
   };
 
-  // Complete task  
   const completeTaskHandler = async (task) => {
     try {
-      const res = await updateTask(task._id, { completed: true });
+      const res = await updateTask(task._id, { completed: true, status: "completed" });
       setTasks((prev) =>
         prev.map((t) => (t._id === task._id ? res.data : t))
       );
@@ -63,11 +56,10 @@ export default function TasksPage() {
     }
   };
 
-  // Called by Timer when pomodoros done
   const handlePomodoroComplete = (task) => {
     setShowCompletionPopup(true);
     setSelectedTask(task);
-    loadTasks(); // refresh tasks after minutesSpent increment
+    loadTasks();
   };
 
   const handleNotCompleted = () => {
@@ -77,23 +69,16 @@ export default function TasksPage() {
   };
 
   const startTask = async (task) => {
-  console.log("Sending task to backend:", task._id, { status: "live" });
-
-  try {
-    const res = await updateTask(task._id, { status: "live" });
-    console.log("Backend response:", res.data);
-
-    setTasks(prev =>
-      prev.map(t => (t._id === task._id ? res.data : t))
-    );
-    setActiveTask(res.data);
-    setShowPopup(false);
-    setSelectedTask(null);
-  } catch (err) {
-    console.error(err);
-  }
-};
-
+    try {
+      const res = await updateTask(task._id, { status: "live" });
+      setTasks(prev => prev.map(t => (t._id === task._id ? res.data : t)));
+      setActiveTask(res.data);
+      setShowPopup(false);
+      setSelectedTask(null);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const handlePendingTaskClick = (task) => {
     setSelectedTask(task);
@@ -103,6 +88,19 @@ export default function TasksPage() {
   const handleLiveTaskClick = (task) => {
     setSelectedTask(task);
     setShowPopup(true);
+  };
+
+  // ✅ New: Delete task
+  const handleDelete = async (task) => {
+    if (!window.confirm(`Are you sure you want to delete "${task.name}"?`)) return;
+    try {
+      await deleteTask(task._id);
+      setTasks(prev => prev.filter(t => t._id !== task._id));
+      if (activeTask?._id === task._id) setActiveTask(null);
+      if (editingTask?._id === task._id) setEditingTask(null);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (
@@ -118,6 +116,7 @@ export default function TasksPage() {
         tasks={tasks || []}
         onPendingClick={handlePendingTaskClick}
         onLiveClick={handleLiveTaskClick}
+        onDelete={handleDelete} // pass delete handler
       />
 
       {/* Start / Edit Popup */}
