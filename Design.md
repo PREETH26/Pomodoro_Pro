@@ -1,153 +1,109 @@
-`                                      `**Low-Level Design (LLD) Document**
+# Low-Level Design (LLD) - Productivity Tracker with
+
+# Pair Programming
+
+## 1. Introduction
 
 
-**Project: Productivity Tracker (Pomodoro Technique)**
+This document describes the Low-Level Design (LLD) for a Productivity Tracker application with
+Pomodoro-based task management. The system supports Personal and Team Task Management,
+and Pair Programming sessions that allow users to collaborate on the same Pomodoro session.
 
-1\. Overview:-
-
-The Productivity Tracker helps users manage tasks using the Pomodoro Technique.
-
-Users can log in, create tasks, run a timer with start/pause/stop controls, and record productivity.
-
-After each session, they confirm task completion, and all data is reflected in their dashboard statistics.
-
-2\. Core Features:-
-
-- Authentication
-- Login & Signup with email/password
-- JWT/cookie-based authentication
-- Task Management
-- Create and start tasks
-- End task manually or automatically after Pomodoro finishes
-- Mark task as completed or not completed
-- Pomodoro Timer
-- Default: 25 min focus
-- Start, Pause, Resume, Stop options
-- Dashboard
-
-3\. User Flow:-
-
-- User signs up / logs in
-- Hero Page → Start a task
-- User can start timer → User can Pause/Stop
-- Timer ends → User marks task Completed/Not Completed
-
-4\. System Components:-
-
-- Frontend: React (UI – login, timer)
-- Backend: Node.js/Express (REST APIs)
-- Database: MongoDB (store users, tasks)
-
-5\. Database Schema:-
-
-User
-
-{
-
-`*`"userId": "uuid",
-
-`*`"name": "string",
-
-`*`"email": "string",
-
-`*`"passwordHash": "string",
-
-`*`"createdAt": "timestamp"
-
-}
-
-Task
-
-{
-
-`*`"taskId": "uuid",
-
-`*`"userId": "uuid",
-
-`*`"title": "string",
-
-`*`"status": "in-progress | completed | failed",
-
-`*`"createdAt": "timestamp",
-
-`*`"completedAt": "timestamp"
-
-}
+## 2. Backend Design
 
 
-6\. Class Diagram (Backend Services):-
+The backend is implemented using Node.js, Express, and MongoDB. Key responsibilities:
+authentication, task management, team tasks, sessions, and real-time synchronization.
 
-+------------------+
+## 2.1 Backend Folder Structure
 
-| UserService      |
+- server/
+- nnn controllers/ (task.js, teamTask.js, user.js)
+- nnn db/ (db connection)
+- nnn middleware/ (authMiddleware.js)
+- nnn models/ (task.js, teamTask.js, user.js)
+- nnn routes/ (authroutes.js, taskroutes.js, teamTaskRoutes.js)
+- nnn server.js
+- nnn .env
 
-| - createUser()   |
+## 2.2 Backend Features
 
-| - loginUser()    |
+- Authentication (JWT-based)
+- Personal Task CRUD
+- Team Task CRUD with permissions (assigner vs assignee)
+- Pair Programming session management (session create/join/sync)
+- Protected routes via middleware
 
-| - getUserStats() |
-
-+------------------+
-
-+------------------+
-
-| TaskService      |
-
-| - createTask()   |
-
-| - updateTask()   |
-
-| - getTasks()     |
-
-| - deleteTask()   |
-
-+------------------+
+## 3. Frontend Design
 
 
-7\. API Design:-
+The frontend is built with React. It provides pages for login/signup, personal tasks, team tasks, pair
+programming, and a dashboard for stats.
 
-Auth
+## 3.1 Frontend Folder Structure
 
-POST /api/auth/signup → Register
-
-POST /api/auth/login → Authenticate
-
-Tasks
-
-POST /api/tasks → Create new task
-
-PUT /api/tasks/:id → Update task status
-
-GET /api/tasks → Get tasks list
-
+- /src
+- nnn api/ (axios wrappers)
+- nnn Auth/ (Login.jsx, Signup.jsx)
+- nnn Components/ (TaskHistory.jsx, TaskManagement.jsx, TeamTaskHistory.jsx,
+    TeamTaskManagement.jsx, Timer.jsx, Timer2.jsx)
+- nnn Pages/ (dashboard.jsx, Hero.jsx, Login.jsx, Signup.jsx, TasksPage.jsx,
+    TeamTasksPage.jsx)
+- nnn context/ (AuthContext.jsx)
+- nnn index.js
 
 
-8\. UI Wireframes (Conceptual):-
+## 3.2 Component Responsibilities
 
-- Login / Signup Page → Auth form
-- Timer Screen → Countdown + Pause/Stop
-- Completion Popup → "Did you complete task?" Yes/No
+- Timer.jsx & Timer2.jsx: Manage countdown, breaks, pomodoro cycles, trigger onComplete
+    callbacks
+- TaskManagement.jsx: Create/update personal tasks
+- TaskHistory.jsx: Display personal tasks grouped by status
+- TeamTaskManagement.jsx: Create/assign team tasks
+- TeamTaskHistory.jsx: View assigned-to-me and assigned-by-me lists
+- TasksPage.jsx: Orchestrates personal tasks + timer
+- TeamTasksPage.jsx: Orchestrates team tasks + timer + pair programming
 
-9\. Future Enhancements (If Time Permits):-
+## 4. UX Flow
 
-- AI-driven Productivity Suggestions (Gemini API)
-- Collect feedback after sessions (rating + note)
-- Use Gemini API to analyze feedback
-- Provide tips like “Try shorter Pomodoros” or “Take longer breaks”
-- Show tips in dashboard
-- Smart Notifications
-- Nodemailer → Email reminders when session ends (“Mark task completed?”)
-- Desktop Notifications → Browser popups for session status
-- Team Collaboration & Leaderboard
-- Track productivity across teams
-- Compare Pomodoros completed
-- Advanced Analytics
-- Identify most productive hours of the day
-- Personalized break/work ratio recommendations
+- User authenticates (signup/login)
+- Dashboard shows quick stats and navigation
+- Personal Task Page allows create/update/delete tasks and run Pomodoro
+- Team Task Page allows assign/manage tasks and join shared sessions
+- Pair Programming: Host starts session, peers join via session ID or invite, timer syncs in real-time
 
-10\. Sequence Flow (Timer Example):-
+## 5. API Mapping
 
-- User → Start Timer → Backend records session start  
-- Backend → Sends countdown updates → Frontend displays timer  
-- Timer ends → Backend prompts completion → User confirms  
-- Backend → Records completion 
+- Auth: POST /api/auth/signup, POST /api/auth/login, GET /api/auth/profile
+- Personal Tasks: POST /api/tasks, GET /api/tasks, PUT /api/tasks/:id, DELETE /api/tasks/:id
+- Team Tasks: POST /api/team-tasks, GET /api/team-tasks/assigned-to-me, GET
+    /api/team-tasks/assigned-by-me, PATCH /api/team-tasks/:taskId/status, PATCH
+    /api/team-tasks/:taskId, DELETE /api/team-tasks/:taskId
+- Sessions (suggested): POST /api/sessions/start, POST /api/sessions/pause, POST
+    /api/sessions/stop, POST /api/sessions/complete
+- WebSocket events: join_session, timer_update, task_update, end_session
+
+## 6. Database Schemas (summary)
+
+- User: _id, name, email, passwordHash, createdAt
+- Task: _id, user (ref), name, minutesSpent, pomodoros, priority, completed, status, timestamps
+- TeamTask: _id, name, pomodoros, priority, deadline, status, assignedBy, assignedTo[],
+    timestamps
+- PomodoroSession (optional): sessionId, taskId, participants[], duration, status, startTime,
+    endTime
+
+## 7. Team Task Sequence (example)
+
+- Team member (assigner) creates a team task and selects one or more assignees.  
+- The task is saved in the backend with details of assignedBy and assignedTo.  
+- Each assignee can view their assigned tasks in the Team Tasks Page under “Assigned to Me.”  
+- When an assignee marks a task as completed, the update is stored in the backend.  
+- The assigner can view progress in the Assigned by Me tab, where completion status of each assignee’s task is reflected in real-time.  
+
+
+## 8. Future Enhancements
+
+- Persist PomodoroSession records for analytics
+- AI suggestions (Gemini), smart break recommendations
+- Email/web notifications (Nodemailer, Web Push)
+- Team leaderboards & advanced analytics
