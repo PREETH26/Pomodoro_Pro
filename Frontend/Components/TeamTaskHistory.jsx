@@ -1,12 +1,16 @@
-export default function TeamTaskHistory({ tasks, activeTask, startTask, completeTask, endTask }) {
-  const assignedToMe = tasks.filter((t) => t.assignedTo?.some(u => u._id));
-  const assignedByMe = tasks.filter((t) => t.assignedBy);
-
+export default function TeamTaskHistory({
+  assignedToMe,
+  assignedByMe,
+  activeTask,
+  startTask,
+  completeTask,
+  endTask,
+}) {
   return (
     <div className="bg-white p-4 rounded-xl shadow-md w-[950px] mt-4">
       <h2 className="mb-3 text-lg font-semibold text-gray-800">Team Task History</h2>
 
-      {/* Live Task Section */}
+      {/* Live Task highlight */}
       {activeTask && (
         <div className="mb-6 p-4 border rounded bg-blue-50 border-blue-400 flex justify-between items-center">
           <div>
@@ -16,16 +20,10 @@ export default function TeamTaskHistory({ tasks, activeTask, startTask, complete
             </p>
           </div>
           <div className="flex gap-2">
-            <button
-              onClick={() => endTask(activeTask)}
-              className="px-3 py-1 bg-red-500 text-white rounded"
-            >
+            <button onClick={() => endTask(activeTask)} className="px-3 py-1 bg-red-500 text-white rounded">
               End
             </button>
-            <button
-              onClick={() => completeTask(activeTask)}
-              className="px-3 py-1 bg-green-600 text-white rounded"
-            >
+            <button onClick={() => completeTask(activeTask)} className="px-3 py-1 bg-green-600 text-white rounded">
               Complete
             </button>
           </div>
@@ -51,15 +49,13 @@ export default function TeamTaskHistory({ tasks, activeTask, startTask, complete
                   <p className="text-sm text-gray-500">
                     Deadline: {t.deadline ? new Date(t.deadline).toLocaleDateString() : "N/A"} | Priority: {t.priority}
                   </p>
+                  <p className="text-xs text-gray-500">Status: {t.status}</p>
                 </div>
                 <div className="flex gap-2">
-                  {t.status !== "done" && (
+                  {t.status !== "completed" && (
                     <>
                       {activeTask?._id === t._id ? (
-                        <button
-                          onClick={() => endTask(t)}
-                          className="px-3 py-1 bg-red-500 text-white rounded"
-                        >
+                        <button onClick={() => endTask(t)} className="px-3 py-1 bg-red-500 text-white rounded">
                           End
                         </button>
                       ) : (
@@ -71,10 +67,7 @@ export default function TeamTaskHistory({ tasks, activeTask, startTask, complete
                           Start
                         </button>
                       )}
-                      <button
-                        onClick={() => completeTask(t)}
-                        className="px-3 py-1 bg-green-600 text-white rounded"
-                      >
+                      <button onClick={() => completeTask(t)} className="px-3 py-1 bg-green-600 text-white rounded">
                         Complete
                       </button>
                     </>
@@ -98,6 +91,12 @@ export default function TeamTaskHistory({ tasks, activeTask, startTask, complete
                   <p className="text-sm text-gray-500">
                     Deadline: {t.deadline ? new Date(t.deadline).toLocaleDateString() : "N/A"} | Priority: {t.priority}
                   </p>
+                  <p className="text-sm text-gray-600 mt-1">
+                    Assigned To: {Array.isArray(t.assignedTo) && t.assignedTo.length > 0
+                      ? t.assignedTo.map((u) => u?.name || u?.email).join(", ")
+                      : "—"}
+                  </p>
+                  <p className="text-sm text-gray-600">Status: {t.status}</p>
                 </div>
               </div>
             ))

@@ -1,97 +1,70 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 
-export default function TeamTaskManagement({ addTask }) {
+const API = "http://localhost:3000/api";
+
+export default function TeamTaskManagement({ onTaskCreated }) {
   const [task, setTask] = useState("");
   const [pomodoros, setPomodoros] = useState(1);
   const [priority, setPriority] = useState("Low");
   const [deadline, setDeadline] = useState("");
-  const [assignTo, setAssignTo] = useState([]); // array of user IDs
+  const [assignTo, setAssignTo] = useState([]);
   const [users, setUsers] = useState([]);
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [loggedInUser, setLoggedInUser] = useState(null);
 
-  // Fetch logged in user
-  useEffect(() => {
-    const fetchMe = async () => {
-     try {
-    const res = await axios.get('http://localhost:3000/api/auth/profile', {
-      withCredentials: true // <-- important
-    });
-        setLoggedInUser(res.data);
-      } catch (err) {
-        console.error("Error fetching logged-in user:", err);
-      }
-    };
-    fetchMe();
-  }, []);
-
-  // Fetch all users
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/api/auth", {
-          withCredentials: true,
-        });
-        setUsers(res.data);
+        const res = await axios.get(`${API}/auth`, { withCredentials: true });
+        setUsers(res.data || []);
       } catch (err) {
-        console.error("Error fetching users:", err);
+        console.error("Error fetching users:", err.response?.data || err.message);
       }
     };
     fetchUsers();
   }, []);
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  if (!task || assignTo.length === 0 || !loggedInUser) return;
+    e.preventDefault();
+    if (!task || assignTo.length === 0) return;
 
-  try {
-    const res = await axios.post(
-      "http://localhost:3000/api/team-tasks",
-      {
-        name: task,  // match schema
-        pomodoros: Number(pomodoros),
-        priority,
-        deadline,
-        assignedTo: assignTo, // match schema
-        assignedBy: loggedInUser._id,
-        status: "pending",
-      },
-      { withCredentials: true }
-    );
-    console.log("Task created:", res.data);
-    addTask(res.data);
+    try {
+      await axios.post(
+        `${API}/team-tasks`,
+        {
+          name: task,
+          pomodoros: Number(pomodoros),
+          priority,
+          deadline,
+          assignedTo: assignTo,
+        },
+        { withCredentials: true }
+      );
 
-    // Reset form
-    setTask("");
-    setPomodoros(1);
-    setPriority("Low");
-    setDeadline("");
-    setAssignTo([]);
-  } catch (err) {
-    console.error("Error creating task:", err.response?.data || err.message);
-  }
-};
+      // Reset
+      setTask("");
+      setPomodoros(1);
+      setPriority("Low");
+      setDeadline("");
+      setAssignTo([]);
 
-
-  const toggleUser = (id) => {
-    if (assignTo.includes(id)) {
-      setAssignTo(assignTo.filter((uid) => uid !== id));
-    } else {
-      setAssignTo([...assignTo, id]);
+      // Refetch lists
+      onTaskCreated && onTaskCreated();
+    } catch (err) {
+      console.error("Error creating task:", err.response?.data || err.message);
     }
   };
 
-  return (
-    <form
-      className="bg-white p-6 rounded-2xl shadow-lg w-[420px] relative"
-      onSubmit={handleSubmit}
-    >
-      <h2 className="mb-5 text-xl font-semibold text-gray-800">
-        Team Task Management
-      </h2>
+  const toggleUser = (id) => {
+    setAssignTo((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+    );
+  };
 
-      {/* Task Name */}
+  return (
+    <form className="bg-white p-6 rounded-2xl shadow-lg w-[420px] relative" onSubmit={handleSubmit}>
+      <h2 className="mb-5 text-xl font-semibold text-gray-800">Team Task Management</h2>
+
       <input
         className="border mb-3 w-full p-2 rounded"
         placeholder="Task Name"
@@ -100,7 +73,6 @@ export default function TeamTaskManagement({ addTask }) {
         required
       />
 
-      {/* Pomodoros */}
       <input
         className="border mb-3 w-full p-2 rounded"
         type="number"
@@ -109,7 +81,6 @@ export default function TeamTaskManagement({ addTask }) {
         onChange={(e) => setPomodoros(e.target.value)}
       />
 
-      {/* Priority */}
       <select
         className="border mb-3 w-full p-2 rounded"
         value={priority}
@@ -120,7 +91,6 @@ export default function TeamTaskManagement({ addTask }) {
         <option>High</option>
       </select>
 
-      {/* Deadline */}
       <input
         type="date"
         className="border mb-3 w-full p-2 rounded"
@@ -128,15 +98,12 @@ export default function TeamTaskManagement({ addTask }) {
         onChange={(e) => setDeadline(e.target.value)}
       />
 
-      {/* Assign To - Dropdown with checkboxes */}
       <div className="mb-3">
         <div
           className="border rounded p-2 cursor-pointer bg-gray-50"
-          onClick={() => setDropdownOpen(!dropdownOpen)}
+          onClick={() => setDropdownOpen((o) => !o)}
         >
-          {assignTo.length > 0
-            ? `${assignTo.length} user(s) selected`
-            : "Select Users"}
+          {assignTo.length > 0 ? `${assignTo.length} user(s) selected` : "Select Users"}
         </div>
 
         {dropdownOpen && (
@@ -152,8 +119,7 @@ export default function TeamTaskManagement({ addTask }) {
                   onChange={() => toggleUser(user._id)}
                 />
                 <span>
-                  {user.name}{" "}
-                  <span className="text-sm text-gray-500">({user.email})</span>
+                  {user.name} <span className="text-sm text-gray-500">({user.email})</span>
                 </span>
               </label>
             ))}
@@ -161,10 +127,7 @@ export default function TeamTaskManagement({ addTask }) {
         )}
       </div>
 
-      <button
-        type="submit"
-        className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded"
-      >
+      <button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded">
         + Assign Task
       </button>
     </form>

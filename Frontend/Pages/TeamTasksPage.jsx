@@ -1,97 +1,92 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState, useCallback } from "react";
+import axios from "axios";
 import Timer from "../Components/Timer2";
 import TeamTaskManagement from "../Components/TeamTaskManagement";
 import TeamTaskHistory from "../Components/TeamTaskHistory";
-import axios from "axios";
+
+const API = "http://localhost:3000/api";
 
 export default function TeamTasksPage() {
-  const [tasks, setTasks] = useState([]);
+  const [assignedToMe, setAssignedToMe] = useState([]);
+  const [assignedByMe, setAssignedByMe] = useState([]);
   const [activeTask, setActiveTask] = useState(null);
   const [showCompletionPopup, setShowCompletionPopup] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
 
-  // Fetch all tasks assigned to me & by me
-  const fetchTasks = async () => {
+  const fetchAll = useCallback(async () => {
     try {
-      const resAssignedToMe = await axios.get(
-        "http://localhost:3000/api/team-tasks/assigned-to-me",
-        { withCredentials: true }
-      );
-      const resAssignedByMe = await axios.get(
-        "http://localhost:3000/api/team-tasks/assigned-by-me",
-        { withCredentials: true }
-      );
-      setTasks([...resAssignedToMe.data, ...resAssignedByMe.data]);
+      const [toMe, byMe] = await Promise.all([
+        axios.get(`${API}/team-tasks/assigned-to-me`, { withCredentials: true }),
+        axios.get(`${API}/team-tasks/assigned-by-me`, { withCredentials: true }),
+      ]);
+      setAssignedToMe(toMe.data || []);
+      setAssignedByMe(byMe.data || []);
     } catch (err) {
-      console.error("Error fetching tasks:", err);
+      console.error("Error fetching team tasks:", err.response?.data || err.message);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchAll();
+  }, [fetchAll]);
+
+  // Start a task (Assigned To Me)
+  const startTask = async (task) => {
+    try {
+      // only one live at a time (client guard)
+      const anyLive =
+        assignedToMe.some(t => t.status === "live") ||
+        (activeTask && activeTask._id !== task._id);
+      if (anyLive) return;
+
+      await axios.patch(`${API}/team-tasks/${task._id}/status`, { status: "live" }, { withCredentials: true });
+      // set as active for the timer
+      setActiveTask({ ...task, status: "live" });
+      await fetchAll();
+    } catch (err) {
+      console.error("Failed to start task:", err.response?.data || err.message);
     }
   };
 
-  useEffect(() => {
-    fetchTasks();
-  }, []);
-
-  // Add task (from TeamTaskManagement)
-  const addTask = (task) => {
-    setTasks((prev) => [...prev, task]);
-  };
-
-  // Start a task → triggers Timer
-  const startTask = (task) => {
-    if (tasks.some((t) => t.status === "live")) return; // only one live task
-    setTasks((prev) =>
-      prev.map((t) => (t._id === task._id ? { ...t, status: "live" } : t))
-    );
-    setActiveTask({ ...task, status: "live" });
-  };
-
-  // End the current live task (set to pending)
-  const endTask = (task) => {
-    setTasks((prev) =>
-      prev.map((t) => (t._id === task._id ? { ...t, status: "pending" } : t))
-    );
-    setActiveTask(null);
-    updateTaskStatusBackend(task._id, "pending");
-  };
-
-  // Complete task
-  const completeTask = (task) => {
-    setTasks((prev) =>
-      prev.map((t) => (t._id === task._id ? { ...t, status: "done" } : t))
-    );
-    setActiveTask(null);
-    setShowCompletionPopup(false);
-    updateTaskStatusBackend(task._id, "done");
-  };
-
-  // Not completed popup
-  const handleNotCompleted = () => {
-    setTasks((prev) =>
-      prev.map((t) =>
-        t._id === selectedTask._id ? { ...t, status: "pending" } : t
-      )
-    );
-    setActiveTask(null);
-    setShowCompletionPopup(false);
-    updateTaskStatusBackend(selectedTask._id, "pending");
-  };
-
-  // Called by Timer after pomodoros complete
-  const handlePomodoroComplete = (task) => {
-    setShowCompletionPopup(true);
-    setSelectedTask(task);
-  };
-
-  // Update task status in backend
-  const updateTaskStatusBackend = async (taskId, status) => {
+  // End current task (back to pending)
+  const endTask = async (task) => {
     try {
-      await axios.patch(
-        `http://localhost:3000/api/team-tasks/${taskId}/status`,
-        { status },
-        { withCredentials: true }
-      );
+      await axios.patch(`${API}/team-tasks/${task._id}/status`, { status: "pending" }, { withCredentials: true });
+      setActiveTask(null);
+      await fetchAll();
     } catch (err) {
-      console.error("Error updating task status:", err.response?.data || err.message);
+      console.error("Failed to end task:", err.response?.data || err.message);
+    }
+  };
+
+  // Complete task (manual button)
+  const completeTask = async (task) => {
+    try {
+      await axios.patch(`${API}/team-tasks/${task._id}/status`, { status: "completed" }, { withCredentials: true });
+      setActiveTask(null);
+      setShowCompletionPopup(false);
+      await fetchAll();
+    } catch (err) {
+      console.error("Failed to complete task:", err.response?.data || err.message);
+    }
+  };
+
+  // Called by Timer when pomodoros are done
+  const handlePomodoroComplete = (task) => {
+    setSelectedTask(task);
+    setShowCompletionPopup(true);
+  };
+
+  const handleNotCompleted = async () => {
+    try {
+      if (!selectedTask) return;
+      await axios.patch(`${API}/team-tasks/${selectedTask._id}/status`, { status: "pending" }, { withCredentials: true });
+      setActiveTask(null);
+      setShowCompletionPopup(false);
+      setSelectedTask(null);
+      await fetchAll();
+    } catch (err) {
+      console.error("Failed to set pending:", err.response?.data || err.message);
     }
   };
 
@@ -104,23 +99,24 @@ export default function TeamTasksPage() {
 
       <div className="flex gap-8">
         <Timer activeTask={activeTask} onComplete={handlePomodoroComplete} />
-        <TeamTaskManagement addTask={addTask} />
+        <TeamTaskManagement onTaskCreated={fetchAll} />
       </div>
 
       <TeamTaskHistory
-        tasks={tasks}
+        assignedToMe={assignedToMe}
+        assignedByMe={assignedByMe}
         activeTask={activeTask}
         startTask={startTask}
         completeTask={completeTask}
         endTask={endTask}
       />
 
-      {/* Completion Popup */}
+      {/* Completion Popup (after timer wraps all pomodoros) */}
       {showCompletionPopup && selectedTask && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
           <div className="bg-white p-8 rounded-xl shadow-lg flex flex-col items-center">
             <h2 className="mb-4 text-lg font-semibold">
-              Did you complete "{selectedTask.name}"?
+              Did you complete “{selectedTask.name}”?
             </h2>
             <div className="flex gap-4">
               <button
