@@ -3,7 +3,6 @@ import axios from "axios";
 import Timer from "../Components/Timer2";
 import TeamTaskManagement from "../Components/TeamTaskManagement";
 import TeamTaskHistory from "../Components/TeamTaskHistory";
-import axios from "axios";
 import { Link } from "react-router";
 import { ArrowRight } from 'lucide-react';
 
