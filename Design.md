@@ -18,13 +18,13 @@ authentication, task management, team tasks, sessions, and real-time synchroniza
 ## 2.1 Backend Folder Structure
 
 - server/
-- nnn controllers/ (task.js, teamTask.js, user.js)
-- nnn db/ (db connection)
-- nnn middleware/ (authMiddleware.js)
-- nnn models/ (task.js, teamTask.js, user.js)
-- nnn routes/ (authroutes.js, taskroutes.js, teamTaskRoutes.js)
-- nnn server.js
-- nnn .env
+-  controllers/ (task.js, teamTask.js, user.js)
+-  db/ (db connection)
+-  middleware/ (authMiddleware.js)
+-  models/ (task.js, teamTask.js, user.js)
+-  routes/ (authroutes.js, taskroutes.js, teamTaskRoutes.js)
+-  server.js
+-  .env
 
 ## 2.2 Backend Features
 
@@ -43,14 +43,13 @@ programming, and a dashboard for stats.
 ## 3.1 Frontend Folder Structure
 
 - /src
-- nnn api/ (axios wrappers)
-- nnn Auth/ (Login.jsx, Signup.jsx)
-- nnn Components/ (TaskHistory.jsx, TaskManagement.jsx, TeamTaskHistory.jsx,
+-  api/ (axios wrappers)
+-  Auth/ (Login.jsx, Signup.jsx)
+-  Components/ (TaskHistory.jsx, TaskManagement.jsx, TeamTaskHistory.jsx,
     TeamTaskManagement.jsx, Timer.jsx, Timer2.jsx)
-- nnn Pages/ (dashboard.jsx, Hero.jsx, Login.jsx, Signup.jsx, TasksPage.jsx,
+-  Pages/ ( Hero.jsx, Login.jsx, Signup.jsx, TasksPage.jsx,
     TeamTasksPage.jsx)
-- nnn context/ (AuthContext.jsx)
-- nnn index.js
+
 
 
 ## 3.2 Component Responsibilities
@@ -67,7 +66,6 @@ programming, and a dashboard for stats.
 ## 4. UX Flow
 
 - User authenticates (signup/login)
-- Dashboard shows quick stats and navigation
 - Personal Task Page allows create/update/delete tasks and run Pomodoro
 - Team Task Page allows assign/manage tasks and join shared sessions
 - Pair Programming: Host starts session, peers join via session ID or invite, timer syncs in real-time
@@ -79,9 +77,6 @@ programming, and a dashboard for stats.
 - Team Tasks: POST /api/team-tasks, GET /api/team-tasks/assigned-to-me, GET
     /api/team-tasks/assigned-by-me, PATCH /api/team-tasks/:taskId/status, PATCH
     /api/team-tasks/:taskId, DELETE /api/team-tasks/:taskId
-- Sessions (suggested): POST /api/sessions/start, POST /api/sessions/pause, POST
-    /api/sessions/stop, POST /api/sessions/complete
-- WebSocket events: join_session, timer_update, task_update, end_session
 
 ## 6. Database Schemas (summary)
 
@@ -89,8 +84,7 @@ programming, and a dashboard for stats.
 - Task: _id, user (ref), name, minutesSpent, pomodoros, priority, completed, status, timestamps
 - TeamTask: _id, name, pomodoros, priority, deadline, status, assignedBy, assignedTo[],
     timestamps
-- PomodoroSession (optional): sessionId, taskId, participants[], duration, status, startTime,
-    endTime
+
 
 ## 7. Team Task Sequence (example)
 
