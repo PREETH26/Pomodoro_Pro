@@ -1,198 +1,113 @@
-`                                      `**Low-Level Design (LLD) Document**
+# Low-Level Design (LLD) - Productivity Tracker with
 
+# Pair Programming
 
-**Project: Productivity Tracker (Pomodoro Technique)**
+## 1. Introduction
 
-1\. Overview:-
 
-The Productivity Tracker helps users manage tasks using the Pomodoro Technique.
+This document describes the Low-Level Design (LLD) for a Productivity Tracker application with
+Pomodoro-based task management. The system supports Personal and Team Task Management,
+and Pair Programming sessions that allow users to collaborate on the same Pomodoro session.
 
-Users can log in, create tasks, run a timer with start/pause/stop controls, and record productivity.
+## 2. Backend Design
 
-After each session, they confirm task completion, and all data is reflected in their dashboard statistics.
 
-2\. Core Features:-
+The backend is implemented using Node.js, Express, and MongoDB. Key responsibilities:
+authentication, task management, team tasks, sessions, and real-time synchronization.
 
-- Authentication
-- Login & Signup with email/password
-- JWT/session-based authentication
-- Task Management
-- Create and start tasks
-- End task manually or automatically after Pomodoro finishes
-- Mark task as completed or not completed
-- Pomodoro Timer
-- Default: 25 min focus + 5 min break (configurable)
-- Start, Pause, Resume, Stop options
-- Dashboard
-- Daily/weekly stats of hours spent
-- Number of tasks completed vs. missed
-- Charts/graphs for progress
+## 2.1 Backend Folder Structure
 
-3\. User Flow:-
+- server/
+- controllers/ (task.js, teamTask.js, user.js)
+- db/ (db connection)
+- middleware/ (authMiddleware.js)
+- models/ (task.js, teamTask.js, user.js)
+- routes/ (authroutes.js, taskroutes.js, teamTaskRoutes.js)
+- server.js
+- .env
 
-- User signs up / logs in
-- Hero Page → Start a task
-- Timer starts → User can Pause/Stop
-- Timer ends → User marks task Completed/Not Completed
-- Dashboard updates → Shows time spent + task stats
+## 2.2 Backend Features
 
-4\. System Components:-
+- Authentication (JWT-based)
+- Personal Task CRUD
+- Team Task CRUD with permissions (assigner vs assignee)
+- Pair Programming session management (session create/join/sync)
+- Protected routes via middleware
 
-- Frontend: React (UI – login, timer, dashboard)
-- Backend: Node.js/Express (REST APIs)
-- Database: MongoDB (store users, tasks, sessions, feedback)
+## 3. Frontend Design
 
-5\. Database Schema:-
 
-User
+The frontend is built with React. It provides pages for login/signup, personal tasks, team tasks, pair
+programming, and a dashboard for stats.
 
-{
+## 3.1 Frontend Folder Structure
 
-`*`"userId": "uuid",
+- /src
+- api/ (axios wrappers)
+- Auth/ (Login.jsx, Signup.jsx)
+- Components/ (TaskHistory.jsx, TaskManagement.jsx, TeamTaskHistory.jsx,
+    TeamTaskManagement.jsx, Timer.jsx, Timer2.jsx)
+- Pages/ (dashboard.jsx, Hero.jsx, Login.jsx, Signup.jsx, TasksPage.jsx,
+    TeamTasksPage.jsx)
+- context/ (AuthContext.jsx)
+- index.js
 
-`*`"name": "string",
 
-`*`"email": "string",
+## 3.2 Component Responsibilities
 
-`*`"passwordHash": "string",
+- Timer.jsx & Timer2.jsx: Manage countdown, breaks, pomodoro cycles, trigger onComplete
+    callbacks
+- TaskManagement.jsx: Create/update personal tasks
+- TaskHistory.jsx: Display personal tasks grouped by status
+- TeamTaskManagement.jsx: Create/assign team tasks
+- TeamTaskHistory.jsx: View assigned-to-me and assigned-by-me lists
+- TasksPage.jsx: Orchestrates personal tasks + timer
+- TeamTasksPage.jsx: Orchestrates team tasks + timer + pair programming
 
-`*`"createdAt": "timestamp"
+## 4. UX Flow
 
-}
+- User authenticates (signup/login)
+- Dashboard shows quick stats and navigation
+- Personal Task Page allows create/update/delete tasks and run Pomodoro
+- Team Task Page allows assign/manage tasks and join shared sessions
+- Pair Programming: Host starts session, peers join via session ID or invite, timer syncs in real-time
 
-Task
+## 5. API Mapping
 
-{
+- Auth: POST /api/auth/signup, POST /api/auth/login, GET /api/auth/profile
+- Personal Tasks: POST /api/tasks, GET /api/tasks, PUT /api/tasks/:id, DELETE /api/tasks/:id
+- Team Tasks: POST /api/team-tasks, GET /api/team-tasks/assigned-to-me, GET
+    /api/team-tasks/assigned-by-me, PATCH /api/team-tasks/:taskId/status, PATCH
+    /api/team-tasks/:taskId, DELETE /api/team-tasks/:taskId
 
-`*`"taskId": "uuid",
+## 6. Database Schemas (summary)
 
-`*`"userId": "uuid",
+- User: _id, name, email, passwordHash, createdAt
+- Task: _id, user (ref), name, minutesSpent, pomodoros, priority, completed, status, timestamps
+- TeamTask: _id, name, pomodoros, priority, deadline, status, assignedBy, assignedTo[],
+    timestamps
 
-`*`"title": "string",
+## 7. Team Task Sequence (example)
 
-`*`"status": "in-progress | completed | failed",
+- Team member (assigner) creates a team task and selects one or more assignees.  
+- The task is saved in the backend with details of assignedBy and assignedTo.  
+- Each assignee can view their assigned tasks in the Team Tasks Page under “Assigned to Me.”  
+- When an assignee marks a task as completed, the update is stored in the backend.  
+- The assigner can view progress in the Assigned by Me tab, where completion status of each assignee’s task is reflected in real-time.  
 
-`*`"createdAt": "timestamp",
+## 8. UX Enhancements & Accessibility
 
-`*`"completedAt": "timestamp"
+- Smooth timer animations & progress circle
 
-}
 
-PomodoroSession
+- Inline, non-blocking completion toasts instead of heavy modals
+- Keyboard shortcuts: Start (Space), Pause (P), End (E)
+- ARIA labels for accessibility
+- Responsive layouts for mobile use
 
-{
+## 9. Future Enhancements
 
-`*`"sessionId": "uuid",
-
-`*`"taskId": "uuid",
-
-`*`"userId": "uuid",
-
-`*`"duration": "number (minutes)",
-
-`*`"status": "completed | interrupted | failed",
-
-`*`"startTime": "timestamp",
-
-`*`"endTime": "timestamp"
-
-}
-
-6\. Class Diagram (Backend Services):-
-
-+------------------+
-
-| UserService      |
-
-| - createUser()   |
-
-| - loginUser()    |
-
-| - getUserStats() |
-
-+------------------+
-
-+------------------+
-
-| TaskService      |
-
-| - createTask()   |
-
-| - updateTask()   |
-
-| - getTasks()     |
-
-+------------------+
-
-+------------------+
-
-| TimerService     |
-
-| - startTimer()   |
-
-| - pauseTimer()   |
-
-| - stopTimer()    |
-
-| - recordSession()|
-
-+------------------+
-
-7\. API Design:-
-
-Auth
-
-POST /api/auth/signup → Register
-
-POST /api/auth/login → Authenticate
-
-Tasks
-
-POST /api/tasks → Create new task
-
-PUT /api/tasks/:id → Update task status
-
-GET /api/tasks → Get tasks list
-
-Timer / Sessions
-
-POST /api/sessions/start → Start Pomodoro
-
-POST /api/sessions/pause → Pause session
-
-POST /api/sessions/stop → Stop session
-
-POST /api/sessions/complete → Mark completed
-
-
-8\. UI Wireframes (Conceptual):-
-
-- Login / Signup Page → Auth form
-- Hero Page → "Start a Task" + Timer display
-- Timer Screen → Countdown + Pause/Stop
-- Completion Popup → "Did you complete task?" Yes/No
-- Dashboard → Graphs of hours, tasks completed/missed
-
-9\. Future Enhancements (If Time Permits):-
-
-- AI-driven Productivity Suggestions (Gemini API)
-- Collect feedback after sessions (rating + note)
-- Use Gemini API to analyze feedback
-- Provide tips like “Try shorter Pomodoros” or “Take longer breaks”
-- Show tips in dashboard
-- Smart Notifications
-- Nodemailer → Email reminders when session ends (“Mark task completed?”)
-- Desktop Notifications → Browser popups for session status
-- Team Collaboration & Leaderboard
-- Track productivity across teams
-- Compare Pomodoros completed
-- Advanced Analytics
-- Identify most productive hours of the day
-- Personalized break/work ratio recommendations
-
-10\. Sequence Flow (Timer Example):-
-
-- User → Start Timer → Backend records session start  
-- Backend → Sends countdown updates → Frontend displays timer  
-- Timer ends → Backend prompts completion → User confirms  
-- Backend → Records completion → Dashboard updates
+- Persist PomodoroSession records for analytics
+- AI suggestions (Gemini), smart break recommendations
+- Email/web notifications (Nodemailer, Web Push)
+- Team leaderboards & advanced analytics
