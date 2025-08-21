@@ -20,7 +20,7 @@ export default function Hero() {
 
       <div className="flex flex-col items-center pt-48 px-6">
         <button
-          onClick={() => navigate("/signup")}
+          onClick={() => navigate("/login")}
           className="w-52 h-52 rounded-full border-4 border-blue-300 flex items-center justify-center text-xl font-extrabold bg-blue-500 hover:bg-blue-600 transition shadow-xl hover:scale-105 hover:shadow-2xl"
         >
           GET STARTED

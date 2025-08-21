@@ -3,6 +3,8 @@ import Timer from "../Components/Timer2";
 import TaskManagement from "../Components/TaskManagement";
 import TaskHistory from "../Components/TaskHistory";
 import { fetchTasks, createTask, updateTask, deleteTask } from "../api/tasks";
+import { Link } from "react-router";
+import { ArrowRight } from 'lucide-react';
 
 export default function TasksPage() {
   const [tasks, setTasks] = useState([]);
@@ -118,9 +120,13 @@ export default function TasksPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center p-6 text-black">
+    <div className="min-h-screen flex flex-col items-center p-5 text-black">
       <h1 className="text-white self-start font-bold text-2xl">
-        Welcome, <span className="text-4xl">{userName || "User"}</span>
+        Welcome, <span className="text-3xl">{userName || "User"}</span>
+      </h1>
+      <h1 className="text-white self-start font-bold text-xl flex mb-3">
+        <ArrowRight />
+        <Link to="/teams" className="ml-2 hover:text-blue-300">Team Task Manager</Link>
       </h1>
 
       <div className="flex gap-7">

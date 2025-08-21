@@ -2,6 +2,9 @@ import { useState } from "react";
 import Timer from "../Components/Timer2";
 import TeamTaskManagement from "../Components/TeamTaskManagement";
 import TeamTaskHistory from "../Components/TeamTaskHistory";
+import axios from "axios";
+import { Link } from "react-router";
+import { ArrowRight } from 'lucide-react';
 
 export default function TeamTasksPage() {
   const [tasks, setTasks] = useState([]);
@@ -66,8 +69,15 @@ export default function TeamTasksPage() {
   };
 
   return (
-    <div className="min-h-screen p-6 text-black flex flex-col items-center">
-      <h1 className="text-white mb-6 text-xl text-center"><span className="font-semibold text-2xl">Team Task</span> <br/>Dashboard</h1>
+    <div className="min-h-screen p-5 text-black flex flex-col items-center">
+      <h1 className="text-white self-start font-bold text-xl flex ">
+        <ArrowRight />
+        <Link to="/personal" className="ml-2 hover:text-blue-300">Personal Task Manager</Link>
+      </h1>
+      <h1 className="text-white mb-6 text-xl text-center">
+        <span className="font-semibold text-2xl">Team Task</span> <br />
+        Dashboard
+      </h1>
 
       <div className="flex gap-8">
      <Timer activeTask={activeTask} onComplete={handlePomodoroComplete} />
